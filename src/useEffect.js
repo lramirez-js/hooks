@@ -11,21 +11,6 @@ const useCounter = (initialValue) => {
   return [ counterVal, increment ]
 }
 
-const Interval = ({ counter }) => {
-  useEffect(() => {
-    const inter = setInterval(() => console.log(counter), 1000)
-    // NOTE: this return on useEffect will help us to UNSUBSCRIBE from previously called effects.
-    // If we called the Interval when counter == 1, and then we call it again when counter == 2, we would have both intervals running.
-    // This prevents that behavior:
-    return () => clearInterval(inter)
-  }, [counter])
-
-  return (
-    <p>Interval on</p>
-  )
-}
-
-
 const App = () => {
   const[counter, setCounter] = useCounter(5)
   
@@ -40,7 +25,6 @@ const App = () => {
     <div>
       Counter: {counter}
       <button onClick={setCounter}> Increment</button>
-      <Interval counter={counter} />
     </div>
   )
 }
