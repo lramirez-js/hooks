@@ -1,49 +1,49 @@
-import { useState, useEffect } from 'react'
+import { useReducer, useState } from 'react'
 
-// This is a Custom Hook:
-const useCounter = (initialValue) => {
-  const [counterVal, setCounterVal] = useState(initialValue)
-  
-  const increment = () => {
-    setCounterVal(counterVal + 1)
+// const state = { counter: 0 }
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'increment': 
+      return { counter: state.counter + 1 }
+    case 'decrement':
+      return { counter: state.counter - 1 }
+    case 'set':
+    default:
+      return { counter: action.payload }
   }
-
-  return [ counterVal, increment ]
 }
 
-const Interval = ({ counter }) => {
-  useEffect(() => {
-    const inter = setInterval(() => console.log(counter), 1000)
-    // NOTE: this return on useEffect will help us to UNSUBSCRIBE from previously called effects.
-    // If we called the Interval when counter == 1, and then we call it again when counter == 2, we would have both intervals running.
-    // This prevents that behavior:
-    return () => clearInterval(inter)
-  }, [counter])
-
-  return (
-    <p>Interval on</p>
-  )
-}
-
+const initial = { counter: 0 }
 
 const App = () => {
-  const[counter, setCounter] = useCounter(5)
-  
-  // useEffect will reload when the input (second parameter) is upated. In this case, the input is "counter".
-  // So, everytime that "counter" changes, the function will be exectued again.
-  // If the input is a blank array [] or ignored (no second parameter called), then useEffect will refresh when any update is done.
-  useEffect(() => {
-    console.log("Effect: Counter has changed")
-  }, [counter]);
+  // The typical reducer looks like this:
+  // const reducer = (acc, ele) => newAcc
+  // For useReducer's functionality it will look like this:
+  // const reducer = (state, action) => { return {any} }
+  // Notie that the "return {any}" will return the new State value.
+  //
+  // An action has this structure:    'type' and 'payload' are conventions, do not change it.
+  // const action = { type: String, payload: any }
+
+  // This hook will return an array (similar to useState's). The "state" is the state too, but the function does not automatically
+  // updates the state. It is a "dispatch" function that dispatches evens with the structure of actions (type and payload).
+  const [state, dispatch] = useReducer(reducer, initial)
+  const [customValue, setCustomValue] = useState(0)
 
   return (
-    <div>
-      Counter: {counter}
-      <button onClick={setCounter}> Increment</button>
-      <Interval counter={counter} />
-    </div>
+    <>
+      <div>
+        Counter: {state.counter}
+        <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+        <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+        <button onClick={() => dispatch({ type: 'set', payload: 5 })}>Set 5</button>
+        <p>Custom value:</p>
+        <input type='text' value={customValue} onChange={(element) => setCustomValue(element.target.value)} />
+        <button onClick={() => dispatch({ type: 'set', payload: customValue })}>Set Custom Value</button>
+      </div>
+    </>
   )
 }
-
 
 export default App
