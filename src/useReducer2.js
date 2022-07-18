@@ -9,8 +9,9 @@ const reducer = (state, action) => {
     case 'decrement':
       return { counter: state.counter - 1 }
     case 'set':
-    default:
       return { counter: action.payload }
+    default:
+      return state
   }
 }
 
