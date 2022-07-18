@@ -40,7 +40,7 @@ const App = () => {
         <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
         <button onClick={() => dispatch({ type: 'set', payload: 5 })}>Set 5</button>
         <p>Custom value:</p>
-        <input type='text' value={customValue} onChange={(element) => setCustomValue(element.target.value)} />
+        <input type='text' value={customValue} onChange={(even) => setCustomValue(even.target.value)} />
         <button onClick={() => dispatch({ type: 'set', payload: customValue })}>Set Custom Value</button>
       </div>
     </>
